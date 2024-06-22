@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RevenueRecognitionSystem.Contexts;
@@ -41,5 +40,74 @@ public class PersonsController(RrsDbContext context) : ControllerBase
         )));
 
         return Ok(persons);
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdatePerson(int id, PersonDto personDto)
+    {
+        switch (personDto.PersonType)
+        {
+            case "NaturalPerson":
+            {
+                var naturalPerson = await context.NaturalPersons.FindAsync(id);
+                
+                if (naturalPerson == null)
+                {
+                    return NotFound();
+                }
+
+                naturalPerson.FirstName = personDto.FirstName;
+                naturalPerson.LastName = personDto.LastName;
+                naturalPerson.Active = personDto.Active;
+                naturalPerson.Address = personDto.Address;
+                naturalPerson.Email = personDto.Email;
+                naturalPerson.PhoneNumber = personDto.PhoneNumber;
+                
+                break;
+            }
+            case "LegalPerson":
+            {
+                var legalPerson = await context.LegalPersons.FindAsync(id);
+                
+                if (legalPerson == null)
+                {
+                    return NotFound();
+                }
+
+                legalPerson.Name = personDto.Name;
+                legalPerson.Address = personDto.Address;
+                legalPerson.Email = personDto.Email;
+                legalPerson.PhoneNumber = personDto.PhoneNumber;
+                
+                break;
+            }
+        }
+
+        await context.SaveChangesAsync();
+        return NoContent();
+    }
+    
+    [HttpDelete]
+    public async Task<IActionResult> DeletePerson(int id, string personType)
+    {
+        switch (personType)
+        {
+            case "NaturalPerson":
+                var naturalPerson = await context.NaturalPersons.FindAsync(id);
+                
+                if (naturalPerson == null)
+                {
+                    return NotFound();
+                }
+                
+                naturalPerson.Active = false;
+                
+                break;
+            case "LegalPerson":
+                return BadRequest("Legal persons cannot be deleted.");
+        }
+
+        await context.SaveChangesAsync();
+        return Ok();
     }
 }
