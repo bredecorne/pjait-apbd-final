@@ -1,8 +1,13 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace RevenueRecognitionSystem.Models;
 
-public class LegalPerson(string name, string address, string email, string phoneNumber, string krs) 
-    : Person(address, email, phoneNumber)
+public class LegalPerson(int id, string name, string address, string email, string phoneNumber, string krs)
+    : Person(id, address, email, phoneNumber)
 {
+    [Required]
     public string Name { get; set; } = name;
-    public string Krs { get; } = krs;
+
+    [Required]
+    public string Krs { get; private set; } = krs;
 }
