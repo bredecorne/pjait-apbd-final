@@ -2,35 +2,29 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RevenueRecognitionSystem.Models;
 
-public class SoftwareLicence(
+public class Software(
     int id,
     string name,
     string description,
-    string version,
-    SoftwareLicence.SoftwareCategory category,
+    Software.SoftwareCategory category,
     bool subscriptionType)
 {
     [Key]
     public int Id { get; set; } = id;
 
-    [Required]
     public string Name { get; set; } = name;
 
-    [Required]
     public string Description { get; set; } = description;
 
-    [Required] 
-    public string Version { get; set; } = version;
-
-    [Required]
     public SoftwareCategory Category { get; set; } = category;
 
-    [Required]
     public bool SubscriptionType { get; set; } = subscriptionType;
 
-    public ICollection<SoftwareLicenceDiscount> SoftwareLicenceDiscounts { get; set; } = new List<SoftwareLicenceDiscount>();
+    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; } = new List<SoftwareDiscount>();
     
-    public ICollection<ContractSoftwareLicence> ContractSoftwareLicences { get; set; } = new List<ContractSoftwareLicence>();
+    public ICollection<ContractSoftware> ContractSoftwares { get; set; } = new List<ContractSoftware>();
+    
+    public ICollection<SoftwareVersion> SoftwareVersions { get; set; } = new List<SoftwareVersion>();
 
     public enum SoftwareCategory
     {

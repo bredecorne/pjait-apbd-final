@@ -11,14 +11,11 @@ public class Discount(
     [Key]
     public int Id { get; set; } = id;
 
-    [Required]
     public decimal Value { get; set; } = value;
 
-    [Required] 
     public DateTime DateFrom { get; set; } = dateFrom;
 
-    [Required]
     public DateTime DateTo { get; set; } = dateTo;
 
-    public ICollection<SoftwareLicenceDiscount> SoftwareLicenceDiscounts { get; set; } = new List<SoftwareLicenceDiscount>();
+    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; } = new List<SoftwareDiscount>();
 }

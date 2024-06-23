@@ -3,27 +3,31 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RevenueRecognitionSystem.Models;
 
-public class Contract
+public class Contract(
+    int id,
+    DateTime dateFrom,
+    DateTime dateTo,
+    Contract.ContractStatus status,
+    decimal price,
+    DateTime updatesTo)
 {
     [Key]
-    public int Id { get; set; }
+    public int Id { get; set; } = id;
 
-    [Required]
-    public DateTime DateFrom { get; set; }
+    public DateTime DateFrom { get; set; } = dateFrom;
 
-    [Required]
-    public DateTime DateTo { get; set; }
+    public DateTime DateTo { get; set; } = dateTo;
+
+    public ContractStatus Status { get; set; } = status;
+
+    [Column(TypeName="money")] 
+    public decimal Price { get; set; } = price;
+
+    public DateTime UpdatesTo { get; set; } = updatesTo;
+
+    public ICollection<ClientContract> ClientContracts { get; set; } = new List<ClientContract>();
     
-    [Required]
-    public ContractStatus Status { get; set; }
-    
-    [Required, Column(TypeName="money")] 
-    public decimal Price { get; set; }
-    
-    [Required] 
-    public DateTime UpdatesTo { get; set; }
-    
-    public ICollection<ContractSoftwareLicence> ContractSoftwareLicences { get; set; } = new List<ContractSoftwareLicence>();
+    public ICollection<ContractSoftware> ContractSoftwares { get; set; } = new List<ContractSoftware>();
     
     public enum ContractStatus
     {
