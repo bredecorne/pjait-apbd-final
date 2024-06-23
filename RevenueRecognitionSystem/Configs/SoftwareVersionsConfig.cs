@@ -8,7 +8,7 @@ public class SoftwareVersionsConfig : IEntityTypeConfiguration<SoftwareVersion>
 {
     public void Configure(EntityTypeBuilder<SoftwareVersion> builder)
     {
-        var softwareVersions = new SoftwareVersion[]
+        var softwareVersions = new []
         {
             new SoftwareVersion(1, 1, "1.0.0", DateTime.Parse("2024-01-10")),
             new SoftwareVersion(2, 1, "1.0.1", DateTime.Parse("2024-01-20")),

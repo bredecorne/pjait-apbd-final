@@ -8,7 +8,7 @@ public class SoftwaresConfig : IEntityTypeConfiguration<Software>
 {
     public void Configure(EntityTypeBuilder<Software> builder)
     {
-        var softwares = new Software[]
+        var softwares = new []
         {
             new Software(1, "PC Optimizer", "Cleans and does maintenance on your PC",
                 Software.SoftwareCategory.Entertainment, false),

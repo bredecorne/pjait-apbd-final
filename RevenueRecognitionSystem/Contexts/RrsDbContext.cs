@@ -23,10 +23,18 @@ public class RrsDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+        
         modelBuilder.ApplyConfiguration(new ClientsConfig());
         modelBuilder.ApplyConfiguration(new DiscountsConfig());
         modelBuilder.ApplyConfiguration(new SoftwaresConfig());
+        modelBuilder.ApplyConfiguration(new ContractsConfig());
+        
+        modelBuilder.ApplyConfiguration(new ClientContractsConfig());
+        
         modelBuilder.ApplyConfiguration(new SoftwareDiscountsConfig());
         modelBuilder.ApplyConfiguration(new SoftwareVersionsConfig());
+        
+        modelBuilder.ApplyConfiguration(new ContractPaymentsConfig());
+        modelBuilder.ApplyConfiguration(new ContractSoftwaresConfig());
     }
 }

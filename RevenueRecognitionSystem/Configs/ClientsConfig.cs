@@ -8,7 +8,7 @@ public class ClientsConfig : IEntityTypeConfiguration<Client>
 {
     public void Configure(EntityTypeBuilder<Client> builder)
     {
-        var clients = new Client[]
+        var clients = new []
         {
             new Client(1, "Grunwaldzka 4, Lublin", "anastazja.dzwon@onet.pl", "123456789", 
                 Client.ClientType.Individual, "Anastazja", "Dzwon", "123456789", false),
