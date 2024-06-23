@@ -137,4 +137,54 @@ public class ClientsController(RrsDbContext context) : ControllerBase
 
         return Ok();
     }
+    
+    [HttpPost("individual")]
+    public async Task<IActionResult> AddIndividualClient(
+        string firstName,
+        string lastName,
+        string address,
+        string email,
+        string phoneNumber,
+        string pesel)
+    {
+        var client = new Client(
+            address,
+            email,
+            phoneNumber,
+            Client.ClientType.Individual,
+            firstName,
+            lastName,
+            pesel,
+            false
+            );
+
+        context.Clients.Add(client);
+        await context.SaveChangesAsync();
+
+        return Ok();
+    }
+    
+    [HttpPost("company")]
+    public async Task<IActionResult> AddCompanyClient(
+        string name,
+        string address,
+        string email,
+        string phoneNumber,
+        string krs)
+    {
+
+        var client = new Client(
+            address,
+            email,
+            phoneNumber,
+            Client.ClientType.Company,
+            name,
+            krs
+        );
+
+        context.Clients.Add(client);
+        await context.SaveChangesAsync();
+
+        return Ok();
+    }
 }

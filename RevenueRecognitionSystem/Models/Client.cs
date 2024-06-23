@@ -47,6 +47,21 @@ public class Client
         Name = null;
         Krs = null;
     }
+    
+    public Client(string address, string email, string phoneNumber, ClientType type, string? firstName, string? lastName, string? pesel, bool deleted)
+    {
+        Address = address;
+        Email = email;
+        PhoneNumber = phoneNumber;
+        Type = type;
+        FirstName = firstName;
+        LastName = lastName;
+        Pesel = pesel;
+        Deleted = deleted;
+
+        Name = null;
+        Krs = null;
+    }
 
 
     // Attributes that are only applicable to company clients
@@ -61,6 +76,21 @@ public class Client
     public Client(int id, string address, string email, string phoneNumber, ClientType type, string? name, string? krs)
     {
         Id = id;
+        Address = address;
+        Email = email;
+        PhoneNumber = phoneNumber;
+        Type = type;
+        Name = name;
+        Krs = krs;
+        
+        FirstName = null;
+        LastName = null;
+        Pesel = null;
+        Deleted = null;
+    }
+    
+    public Client(string address, string email, string phoneNumber, ClientType type, string? name, string? krs)
+    {
         Address = address;
         Email = email;
         PhoneNumber = phoneNumber;
