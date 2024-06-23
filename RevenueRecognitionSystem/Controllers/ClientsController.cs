@@ -27,18 +27,17 @@ public class ClientsController(RrsDbContext context) : ControllerBase
                 c.LastName,
                 c.Pesel,
                 c.Deleted
-            ));
+                ));
 
         var companyClients = clients
             .FindAll(c => c.Type == Client.ClientType.Company)
-            .Select(c => new CompanyClientDto(
-                c.Id,
+            .Select(c => new CompanyClientDto(c.Id,
                 c.Address,
                 c.Email,
                 c.PhoneNumber,
                 c.Name,
                 c.Krs
-            ));
+                ));
         
         return Ok(new { individualClients, companyClients });
     }
@@ -97,7 +96,7 @@ public class ClientsController(RrsDbContext context) : ControllerBase
             client.PhoneNumber,
             client.Name,
             client.Krs
-        );
+            );
         
         patchDoc.ApplyTo(clientToPatch);
 
@@ -139,24 +138,24 @@ public class ClientsController(RrsDbContext context) : ControllerBase
     }
     
     [HttpPost("individual")]
-    public async Task<IActionResult> AddIndividualClient(
-        string firstName,
-        string lastName,
-        string address,
-        string email,
-        string phoneNumber,
-        string pesel)
+    public async Task<IActionResult> AddIndividualClient([FromBody] CreateIndividualClientDto clientDto)
     {
+        if (!TryValidateModel(clientDto))
+        {
+            return ValidationProblem(ModelState);
+        }
+
         var client = new Client(
-            address,
-            email,
-            phoneNumber,
+            clientDto.Address,
+            clientDto.Email,
+            clientDto.PhoneNumber,
             Client.ClientType.Individual,
-            firstName,
-            lastName,
-            pesel,
+            clientDto.FirstName,
+            clientDto.LastName,
+            clientDto.Pesel,
             false
             );
+        
 
         context.Clients.Add(client);
         await context.SaveChangesAsync();
@@ -165,22 +164,21 @@ public class ClientsController(RrsDbContext context) : ControllerBase
     }
     
     [HttpPost("company")]
-    public async Task<IActionResult> AddCompanyClient(
-        string name,
-        string address,
-        string email,
-        string phoneNumber,
-        string krs)
+    public async Task<IActionResult> AddCompanyClient([FromBody] CreateCompanyClientDto clientDto)
     {
-
+        if (!TryValidateModel(clientDto))
+        {
+            return ValidationProblem(ModelState);
+        }
+        
         var client = new Client(
-            address,
-            email,
-            phoneNumber,
+            clientDto.Address,
+            clientDto.Email,
+            clientDto.PhoneNumber,
             Client.ClientType.Company,
-            name,
-            krs
-        );
+            clientDto.Name,
+            clientDto.Krs
+            );
 
         context.Clients.Add(client);
         await context.SaveChangesAsync();

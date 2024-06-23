@@ -15,5 +15,4 @@ public class ContractsController(RrsDbContext context) : ControllerBase
             .ToListAsync();
         return Ok(contracts);
     }
-
 }
