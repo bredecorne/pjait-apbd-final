@@ -1,16 +1,22 @@
 using Microsoft.EntityFrameworkCore;
 using RevenueRecognitionSystem.Contexts;
+using RevenueRecognitionSystem.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers()
-    .AddNewtonsoftJson();
+builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<RrsDbContext>(
     options => options.UseSqlServer(builder.Configuration.GetConnectionString("DockerDb"))
 );
+
+builder.Services.AddControllers().AddNewtonsoftJson(options =>
+    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+);
+builder.Services.AddScoped<IContractsService, ContractsService>();
+builder.Services.AddScoped<IPaymentsService, PaymentsService>();
 
 var app = builder.Build();
 

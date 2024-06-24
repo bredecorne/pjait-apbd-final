@@ -7,10 +7,13 @@ public class SoftwareVersion
     [Key]
     public int Id { get; set; }
 
+    [Required]
     public int SoftwareId { get; set; }
 
+    [Required]
     public string VersionNumber { get; set; }
 
+    [Required]
     public DateTime ReleaseDate { get; set; }
 
     [ForeignKey("SoftwareId")]

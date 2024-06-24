@@ -2,29 +2,50 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RevenueRecognitionSystem.Models;
 
-public class Software(
-    int id,
-    string name,
-    string description,
-    Software.SoftwareCategory category,
-    bool subscriptionType)
+public class Software
 {
     [Key]
-    public int Id { get; set; } = id;
+    public int Id { get; set; }
 
-    public string Name { get; set; } = name;
+    [Required]
+    public string Name { get; set; }
 
-    public string Description { get; set; } = description;
+    [Required]
+    public string Description { get; set; }
 
-    public SoftwareCategory Category { get; set; } = category;
+    [Required]
+    public SoftwareCategory Category { get; set; }
 
-    public bool SubscriptionType { get; set; } = subscriptionType;
-
-    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; } = new List<SoftwareDiscount>();
+    [Required]
+    public bool SubscriptionType { get; set; }
     
-    public ICollection<ContractSoftware> ContractSoftwares { get; set; } = new List<ContractSoftware>();
+    [Required]
+    public decimal Price { get; set; }
+
+    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; }
     
-    public ICollection<SoftwareVersion> SoftwareVersions { get; set; } = new List<SoftwareVersion>();
+    public ICollection<ContractSoftware> ContractSoftwares { get; set; }
+    
+    public ICollection<SoftwareVersion> SoftwareVersions { get; set; }
+
+    public Software(int id, string name, string description, SoftwareCategory category, bool subscriptionType, decimal price)
+    {
+        Id = id;
+        Name = name;
+        Description = description;
+        Category = category;
+        SubscriptionType = subscriptionType;
+        Price = price;
+    }
+
+    public Software(string name, string description, SoftwareCategory category, bool subscriptionType, decimal price)
+    {
+        Name = name;
+        Description = description;
+        Category = category;
+        SubscriptionType = subscriptionType;
+        Price = price;
+    }
 
     public enum SoftwareCategory
     {

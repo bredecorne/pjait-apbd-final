@@ -42,6 +42,48 @@ public class ClientsController(RrsDbContext context) : ControllerBase
         return Ok(new { individualClients, companyClients });
     }
     
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetClient(int id)
+    {
+        var client = await context.Clients.FindAsync(id);
+        
+        switch (client)
+        {
+            case null:
+                return NotFound();
+            case { Type: Client.ClientType.Individual }:
+            {
+                var individualClient = new IndividualClientDto(
+                    client.Id,
+                    client.Address,
+                    client.Email,
+                    client.PhoneNumber,
+                    client.FirstName,
+                    client.LastName,
+                    client.Pesel,
+                    client.Deleted
+                );
+            
+                return Ok(individualClient);
+            }
+            case { Type: Client.ClientType.Company }:
+            {
+                var companyClient = new CompanyClientDto(
+                    client.Id,
+                    client.Address,
+                    client.Email,
+                    client.PhoneNumber,
+                    client.Name,
+                    client.Krs
+                );
+            
+                return Ok(companyClient);
+            }
+        }
+        
+        return NotFound();
+    }
+    
     [HttpPatch("individual/{id:int}")]
     public async Task<IActionResult> UpdateIndividualClient(int id, [FromBody] JsonPatchDocument<IndividualClientDto> patchDoc)
     {
@@ -63,11 +105,6 @@ public class ClientsController(RrsDbContext context) : ControllerBase
         );
         
         patchDoc.ApplyTo(clientToPatch); 
-
-        if (!TryValidateModel(clientToPatch))
-        {
-            return ValidationProblem(ModelState);
-        }
 
         client.Address = clientToPatch.Address;
         client.Email = clientToPatch.Email;
@@ -99,11 +136,6 @@ public class ClientsController(RrsDbContext context) : ControllerBase
             );
         
         patchDoc.ApplyTo(clientToPatch);
-
-        if (!TryValidateModel(clientToPatch))
-        {
-            return ValidationProblem(ModelState);
-        }
 
         client.Address = clientToPatch.Address;
         client.Email = clientToPatch.Email;
@@ -140,10 +172,6 @@ public class ClientsController(RrsDbContext context) : ControllerBase
     [HttpPost("individual")]
     public async Task<IActionResult> AddIndividualClient([FromBody] CreateIndividualClientDto clientDto)
     {
-        if (!TryValidateModel(clientDto))
-        {
-            return ValidationProblem(ModelState);
-        }
 
         var client = new Client(
             clientDto.Address,
@@ -166,10 +194,6 @@ public class ClientsController(RrsDbContext context) : ControllerBase
     [HttpPost("company")]
     public async Task<IActionResult> AddCompanyClient([FromBody] CreateCompanyClientDto clientDto)
     {
-        if (!TryValidateModel(clientDto))
-        {
-            return ValidationProblem(ModelState);
-        }
         
         var client = new Client(
             clientDto.Address,

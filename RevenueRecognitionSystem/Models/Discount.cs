@@ -2,20 +2,34 @@ using System.ComponentModel.DataAnnotations;
 
 namespace RevenueRecognitionSystem.Models;
 
-public class Discount(
-    int id,
-    decimal value,
-    DateTime dateFrom,
-    DateTime dateTo)
+public class Discount
 {
     [Key]
-    public int Id { get; set; } = id;
+    public int Id { get; set; }
 
-    public decimal Value { get; set; } = value;
+    [Required]
+    public decimal Value { get; set; }
 
-    public DateTime DateFrom { get; set; } = dateFrom;
+    [Required]
+    public DateTime DateFrom { get; set; }
 
-    public DateTime DateTo { get; set; } = dateTo;
+    [Required]
+    public DateTime DateTo { get; set; }
+    
+    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; }
 
-    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; } = new List<SoftwareDiscount>();
+    public Discount(int id, decimal value, DateTime dateFrom, DateTime dateTo)
+    {
+        Id = id;
+        Value = value;
+        DateFrom = dateFrom;
+        DateTo = dateTo;
+    }
+
+    public Discount(decimal value, DateTime dateFrom, DateTime dateTo)
+    {
+        Value = value;
+        DateFrom = dateFrom;
+        DateTo = dateTo;
+    }
 }

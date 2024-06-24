@@ -8,7 +8,7 @@ namespace RevenueRecognitionSystem.Models;
 public class SoftwareDiscount
 {
     public int SoftwareId { get; set; }
-
+    
     public int DiscountId { get; set; }
 
     [ForeignKey("SoftwareId")]
