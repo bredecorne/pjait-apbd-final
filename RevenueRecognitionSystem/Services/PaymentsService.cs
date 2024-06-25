@@ -44,8 +44,7 @@ public class PaymentsService(RrsDbContext context) : IPaymentsService
     public async Task<decimal> CalculateIncomeRecognized(int softwareId)
     {
         var contracts = await context.Contracts
-            .Include(c => c.ContractSoftwares)
-            .Where(c => c.ContractSoftwares.Any(cs => cs.SoftwareId == softwareId))
+            .Where(c => c.SoftwareId == softwareId)
             .Where(c => c.Status == Contract.ContractStatus.Active || c.Status == Contract.ContractStatus.Inactive)
             .ToListAsync();
         

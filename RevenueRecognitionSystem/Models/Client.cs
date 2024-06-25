@@ -18,9 +18,10 @@ public class Client
     [Required]
     public string PhoneNumber { get; set; }
     
+    [Required]
     public ClientType Type { get; set; }
     
-    public ICollection<ClientContract> ClientContracts { get; set; } = new List<ClientContract>();
+    public virtual ICollection<Contract> Contracts { get; set; }
     
     // Attributes that are only applicable to individual clients
     

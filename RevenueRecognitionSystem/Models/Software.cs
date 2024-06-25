@@ -21,12 +21,20 @@ public class Software
     
     [Required]
     public decimal Price { get; set; }
+    
+    public virtual ICollection<Contract> Contracts { get; set; }
 
     public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; }
     
-    public ICollection<ContractSoftware> ContractSoftwares { get; set; }
-    
     public ICollection<SoftwareVersion> SoftwareVersions { get; set; }
+    
+    public enum SoftwareCategory
+    {
+        Finance,
+        Healthcare,
+        Education,
+        Entertainment
+    }
 
     public Software(int id, string name, string description, SoftwareCategory category, bool subscriptionType, decimal price)
     {
@@ -47,11 +55,4 @@ public class Software
         Price = price;
     }
 
-    public enum SoftwareCategory
-    {
-        Finance,
-        Healthcare,
-        Education,
-        Entertainment
-    }
 }
