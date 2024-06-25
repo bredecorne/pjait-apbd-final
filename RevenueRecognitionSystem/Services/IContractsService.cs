@@ -1,14 +1,11 @@
-using RevenueRecognitionSystem.Contexts;
 using RevenueRecognitionSystem.DTOs.Contract;
+using System.Threading.Tasks;
 
 namespace RevenueRecognitionSystem.Services;
 
 public interface IContractsService
 {
-    bool CheckContractDates(CreateContractDto contractDto);
+    Task<bool> ValidateContractAsync(CreateContractDto contractDto);
     
-    bool CheckUpdatesToDate(CreateContractDto contractDto);
-    
-    Task<decimal> CalculatePrice(CreateContractDto contractDto, RrsDbContext context);
-    
+    Task<decimal> CalculatePrice(CreateContractDto contractDto);
 }

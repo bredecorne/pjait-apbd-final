@@ -20,7 +20,7 @@ public class PaymentsController(RrsDbContext context, IPaymentsService service) 
             return NotFound();
         }
 
-        var remainingToPay = await service.CalculateRemainingToPay(contractId, context);
+        var remainingToPay = await service.CalculateRemainingToPay(contractId);
         return Ok(remainingToPay);
     }
     
@@ -39,13 +39,18 @@ public class PaymentsController(RrsDbContext context, IPaymentsService service) 
             return NotFound();
         }
 
-        var remaining = await service.CalculateRemainingToPay(paymentDto.ContractId, context);
+        var remaining = await service.CalculateRemainingToPay(paymentDto.ContractId);
 
         if (remaining < paymentDto.Value)
         {
             return BadRequest();
         }
-        
+
+        if (remaining == 0)
+        {
+            service.UpdateContractStatus(paymentDto.ContractId);
+        }
+
         var payment = new ContractPayment(
             paymentDto.ContractId,
             paymentDto.ClientId,
@@ -57,5 +62,27 @@ public class PaymentsController(RrsDbContext context, IPaymentsService service) 
         await context.SaveChangesAsync();
 
         return Ok(payment);
+    }
+    
+    [HttpGet("income/{softwareId:int}")]
+    public async Task<IActionResult> GetIncomeRecognized(int softwareId)
+    {
+        var software = await context.Softwares.FindAsync(softwareId);
+        if (software == null)
+        {
+            return NotFound();
+        }
+
+        var incomeRecognized = await service.CalculateIncomeRecognized(softwareId);
+        
+        return Ok(incomeRecognized);
+    }
+    
+    [HttpGet("income")]
+    public async Task<IActionResult> GetIncomeRecognized()
+    {
+        var incomeRecognized = await service.CalculateIncomeRecognized();
+        
+        return Ok(incomeRecognized);
     }
 }
