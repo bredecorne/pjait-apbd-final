@@ -1,15 +1,16 @@
-using RevenueRecognitionSystem.Contexts;
+using RevenueRecognitionSystem.DTOs.Contract;
+using RevenueRecognitionSystem.Models;
+using Microsoft.AspNetCore.Mvc;
 using RevenueRecognitionSystem.DTOs;
 
-namespace RevenueRecognitionSystem.Services;
-
-public interface IPaymentsService
+namespace RevenueRecognitionSystem.Services
 {
-    Task<decimal> CalculateRemainingToPay(int contractId);
-    
-    void UpdateContractStatus(int contractId);
-    
-    Task<decimal> CalculateIncomeRecognized(int softwareId);
-    
-    Task<decimal> CalculateIncomeRecognized();
+    public interface IPaymentsService
+    {
+        Task<decimal?> CalculateRemainingToPay(int contractId);
+        Task<(bool Success, IActionResult Response, ContractPayment Payment)> AddPayment(CreateContractPaymentDto paymentDto);
+        Task<decimal> CalculateIncomeRecognized();
+        Task<decimal?> CalculateIncomeRecognized(int softwareId);
+        Task<(bool Success, IActionResult Response, decimal ConvertedIncome)> CalculateIncomeRecognized(string currency);
+    }
 }
