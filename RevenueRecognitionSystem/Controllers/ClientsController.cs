@@ -15,7 +15,7 @@ public class ClientsController(RrsDbContext context) : ControllerBase
     public async Task<IActionResult> GetClients()
     {
         var clients = await context.Clients.ToListAsync();
-        
+
         var individualClients = clients
             .FindAll(c => c.Type == Client.ClientType.Individual)
             .Select(c => new IndividualClientDto(
@@ -27,7 +27,7 @@ public class ClientsController(RrsDbContext context) : ControllerBase
                 c.LastName,
                 c.Pesel,
                 c.Deleted
-                ));
+            ));
 
         var companyClients = clients
             .FindAll(c => c.Type == Client.ClientType.Company)
@@ -37,16 +37,16 @@ public class ClientsController(RrsDbContext context) : ControllerBase
                 c.PhoneNumber,
                 c.Name,
                 c.Krs
-                ));
-        
+            ));
+
         return Ok(new { individualClients, companyClients });
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetClient(int id)
     {
         var client = await context.Clients.FindAsync(id);
-        
+
         switch (client)
         {
             case null:
@@ -63,7 +63,7 @@ public class ClientsController(RrsDbContext context) : ControllerBase
                     client.Pesel,
                     client.Deleted
                 );
-            
+
                 return Ok(individualClient);
             }
             case { Type: Client.ClientType.Company }:
@@ -76,22 +76,20 @@ public class ClientsController(RrsDbContext context) : ControllerBase
                     client.Name,
                     client.Krs
                 );
-            
+
                 return Ok(companyClient);
             }
         }
-        
+
         return NotFound();
     }
-    
+
     [HttpPatch("individual/{id:int}")]
-    public async Task<IActionResult> UpdateIndividualClient(int id, [FromBody] JsonPatchDocument<IndividualClientDto> patchDoc)
+    public async Task<IActionResult> UpdateIndividualClient(int id,
+        [FromBody] JsonPatchDocument<IndividualClientDto> patchDoc)
     {
         var client = await context.Clients.FindAsync(id);
-        if (client is not { Type: Client.ClientType.Individual })
-        {
-            return NotFound();
-        }
+        if (client is not { Type: Client.ClientType.Individual }) return NotFound();
 
         var clientToPatch = new IndividualClientDto(
             client.Id,
@@ -103,8 +101,8 @@ public class ClientsController(RrsDbContext context) : ControllerBase
             client.Pesel,
             client.Deleted
         );
-        
-        patchDoc.ApplyTo(clientToPatch); 
+
+        patchDoc.ApplyTo(clientToPatch);
 
         client.Address = clientToPatch.Address;
         client.Email = clientToPatch.Email;
@@ -118,13 +116,11 @@ public class ClientsController(RrsDbContext context) : ControllerBase
     }
 
     [HttpPatch("company/{id:int}")]
-    public async Task<IActionResult> UpdateCompanyClient(int id, [FromBody] JsonPatchDocument<CompanyClientDto> patchDoc)
+    public async Task<IActionResult> UpdateCompanyClient(int id,
+        [FromBody] JsonPatchDocument<CompanyClientDto> patchDoc)
     {
         var client = await context.Clients.FindAsync(id);
-        if (client is not { Type: Client.ClientType.Company })
-        {
-            return NotFound();
-        }
+        if (client is not { Type: Client.ClientType.Company }) return NotFound();
 
         var clientToPatch = new CompanyClientDto(
             client.Id,
@@ -133,8 +129,8 @@ public class ClientsController(RrsDbContext context) : ControllerBase
             client.PhoneNumber,
             client.Name,
             client.Krs
-            );
-        
+        );
+
         patchDoc.ApplyTo(clientToPatch);
 
         client.Address = clientToPatch.Address;
@@ -146,33 +142,27 @@ public class ClientsController(RrsDbContext context) : ControllerBase
 
         return Ok();
     }
-    
+
     [HttpDelete]
     public async Task<IActionResult> DeleteClient(int id)
     {
         var client = await context.Clients.FindAsync(id);
-        
-        if (client is null)
-        {
-            return NotFound();
-        }
-        
+
+        if (client is null) return NotFound();
+
         if (client is not { Type: Client.ClientType.Individual })
-        {
             return BadRequest("Only individual clients can be deleted");
-        }
 
         client.Deleted = true;
-        
+
         await context.SaveChangesAsync();
 
         return Ok();
     }
-    
+
     [HttpPost("individual")]
     public async Task<IActionResult> AddIndividualClient([FromBody] CreateIndividualClientDto clientDto)
     {
-
         var client = new Client(
             clientDto.Address,
             clientDto.Email,
@@ -182,19 +172,18 @@ public class ClientsController(RrsDbContext context) : ControllerBase
             clientDto.LastName,
             clientDto.Pesel,
             false
-            );
-        
+        );
+
 
         context.Clients.Add(client);
         await context.SaveChangesAsync();
 
         return Ok();
     }
-    
+
     [HttpPost("company")]
     public async Task<IActionResult> AddCompanyClient([FromBody] CreateCompanyClientDto clientDto)
     {
-        
         var client = new Client(
             clientDto.Address,
             clientDto.Email,
@@ -202,7 +191,7 @@ public class ClientsController(RrsDbContext context) : ControllerBase
             Client.ClientType.Company,
             clientDto.Name,
             clientDto.Krs
-            );
+        );
 
         context.Clients.Add(client);
         await context.SaveChangesAsync();

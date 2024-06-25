@@ -4,30 +4,6 @@ namespace RevenueRecognitionSystem.Models;
 
 public class Software
 {
-    [Key]
-    public int Id { get; set; }
-
-    [Required]
-    public string Name { get; set; }
-
-    [Required]
-    public string Description { get; set; }
-
-    [Required]
-    public SoftwareCategory Category { get; set; }
-
-    [Required]
-    public bool SubscriptionType { get; set; }
-    
-    [Required]
-    public decimal Price { get; set; }
-    
-    public virtual ICollection<Contract> Contracts { get; set; }
-
-    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; }
-    
-    public ICollection<SoftwareVersion> SoftwareVersions { get; set; }
-    
     public enum SoftwareCategory
     {
         Finance,
@@ -36,7 +12,8 @@ public class Software
         Entertainment
     }
 
-    public Software(int id, string name, string description, SoftwareCategory category, bool subscriptionType, decimal price)
+    public Software(int id, string name, string description, SoftwareCategory category, bool subscriptionType,
+        decimal price)
     {
         Id = id;
         Name = name;
@@ -55,4 +32,21 @@ public class Software
         Price = price;
     }
 
+    [Key] public int Id { get; set; }
+
+    [Required] public string Name { get; set; }
+
+    [Required] public string Description { get; set; }
+
+    [Required] public SoftwareCategory Category { get; set; }
+
+    [Required] public bool SubscriptionType { get; set; }
+
+    [Required] public decimal Price { get; set; }
+
+    public virtual ICollection<Contract> Contracts { get; set; }
+
+    public ICollection<SoftwareDiscount> SoftwareDiscounts { get; set; }
+
+    public ICollection<SoftwareVersion> SoftwareVersions { get; set; }
 }

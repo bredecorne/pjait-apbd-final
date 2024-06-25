@@ -14,7 +14,6 @@ public class ContractsController(RrsDbContext context, IContractsService service
     [HttpGet]
     public async Task<IActionResult> GetContracts()
     {
-        
         var contracts = await context.Contracts
             .Include(c => c.Client)
             .Include(c => c.Software)
@@ -30,25 +29,21 @@ public class ContractsController(RrsDbContext context, IContractsService service
                 c.Software.Name,
                 c.SoftwareVersion.VersionNumber))
             .ToListAsync();
-        
+
         return Ok(contracts);
     }
-    
+
     [HttpGet("{id:int}")]
     public async Task<IActionResult> GetContracts(int id)
     {
-
         var contract = await context.Contracts
             .Include(c => c.Client)
             .Include(c => c.Software)
             .Include(c => c.SoftwareVersion)
             .FirstOrDefaultAsync(c => c.Id == id);
 
-        if (contract == null)
-        {
-            return NotFound();
-        }
-        
+        if (contract == null) return NotFound();
+
         var contractDto = new ContractDto(
             contract.DateFrom,
             contract.DateTo,
@@ -59,15 +54,14 @@ public class ContractsController(RrsDbContext context, IContractsService service
             contract.Client.Name,
             contract.Software.Name,
             contract.SoftwareVersion.VersionNumber);
-        
+
         return Ok(contractDto);
     }
-    
-    
+
+
     [HttpPost]
     public async Task<IActionResult> CreateContract([FromBody] CreateContractDto contractDto)
     {
-        
         var contract = new Contract(
             contractDto.DateFrom,
             contractDto.DateTo,
@@ -78,10 +72,10 @@ public class ContractsController(RrsDbContext context, IContractsService service
             contractDto.SoftwareId,
             contractDto.SoftwareVersionId
         );
-    
+
         await context.Contracts.AddAsync(contract);
         await context.SaveChangesAsync();
-    
+
         return Ok();
     }
 }

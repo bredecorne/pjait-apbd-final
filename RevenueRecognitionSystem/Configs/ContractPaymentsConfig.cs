@@ -12,7 +12,7 @@ public class ContractPaymentsConfig : IEntityTypeConfiguration<ContractPayment>
         {
             new ContractPayment(1, 1, 1, 1000m, DateTime.Parse("2024-01-01"))
         };
-        
+
         builder.HasData(contractPayments);
     }
 }

@@ -1,5 +1,3 @@
-using RevenueRecognitionSystem.Models;
-
 namespace RevenueRecognitionSystem.DTOs.Contract;
 
 public class CreateContractDto(
@@ -13,7 +11,7 @@ public class CreateContractDto(
     public DateTime DateFrom { get; set; } = dateFrom;
 
     public DateTime DateTo { get; set; } = dateTo;
-    
+
     public DateTime UpdatesTo { get; set; } = updatesTo;
 
     public int ClientId { get; set; } = clientId;

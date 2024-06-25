@@ -2,7 +2,6 @@ namespace RevenueRecognitionSystem.DTOs;
 
 public class CreateCompanyClientDto(string address, string email, string phoneNumber, string? name, string? krs)
 {
-    
     public string Address { get; set; } = address;
 
     public string Email { get; set; } = email;

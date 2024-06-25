@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using RevenueRecognitionSystem.Contexts;
 using RevenueRecognitionSystem.Services;
 
@@ -13,7 +14,7 @@ builder.Services.AddDbContext<RrsDbContext>(
 );
 
 builder.Services.AddControllers().AddNewtonsoftJson(options =>
-    options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+    options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore
 );
 builder.Services.AddScoped<IContractsService, ContractsService>();
 builder.Services.AddScoped<IPaymentsService, PaymentsService>();
