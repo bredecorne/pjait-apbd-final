@@ -21,6 +21,7 @@ public class RrsDbContext : DbContext
     public DbSet<Software> Softwares { get; set; }
     public DbSet<SoftwareDiscount> SoftwareDiscounts { get; set; }
     public DbSet<SoftwareVersion> SoftwareVersions { get; set; }
+    public DbSet<AppUser> AppUsers { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
