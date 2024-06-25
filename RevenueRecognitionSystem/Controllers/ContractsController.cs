@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RevenueRecognitionSystem.Contexts;
+using RevenueRecognitionSystem.DTOs.Contract;
+using RevenueRecognitionSystem.Models;
 using RevenueRecognitionSystem.Services;
 
 namespace RevenueRecognitionSystem.Controllers;
@@ -12,59 +14,74 @@ public class ContractsController(RrsDbContext context, IContractsService service
     [HttpGet]
     public async Task<IActionResult> GetContracts()
     {
+        
         var contracts = await context.Contracts
             .Include(c => c.Client)
             .Include(c => c.Software)
-            .Include(c => c.Software)
+            .Include(c => c.SoftwareVersion)
+            .Select(c => new ContractDto(
+                c.DateFrom,
+                c.DateTo,
+                c.Price,
+                c.UpdatesTo,
+                c.Client.FirstName,
+                c.Client.LastName,
+                c.Client.Name,
+                c.Software.Name,
+                c.SoftwareVersion.VersionNumber))
             .ToListAsync();
         
         return Ok(contracts);
     }
     
-    // [HttpGet("{id:int}")]
-    // public async Task<IActionResult> GetContract(int id)
-    // {
-    //     var contract = await context.Contracts
-    //         .Include(c => c.ClientContracts)
-    //             .ThenInclude(cc => cc.Client)
-    //         .Include(c => c.ContractSoftwares)
-    //             .ThenInclude(cs => cs.Software)
-    //         .FirstOrDefaultAsync(c => c.Id == id);
-    //     
-    //     if (contract == null)
-    //     {
-    //         return NotFound();
-    //     }
-    //     
-    //     return Ok(contract);
-    // }
-    //
-    // [HttpPost]
-    // public async Task<IActionResult> CreateContract([FromBody] CreateContractDto contractDto)
-    // {
-    //     if (!await service.ValidateContractAsync(contractDto))
-    //     {
-    //         return BadRequest();
-    //     }
-    //     
-    //     var contract = new Contract(
-    //         contractDto.DateFrom,
-    //         contractDto.DateTo,
-    //         Contract.ContractStatus.AwaitingPayment,
-    //         await service.CalculatePrice(contractDto),
-    //         contractDto.UpdatesTo
-    //     );
-    //
-    //     await context.Contracts.AddAsync(contract);
-    //     await context.SaveChangesAsync();
-    //
-    //     var contractSoftware = new ContractSoftware(contract.Id, contractDto.SoftwareId);
-    //     var clientContract = new ClientContract(contractDto.ClientId, contract.Id);
-    //
-    //     await context.ContractSoftwares.AddAsync(contractSoftware);
-    //     await context.ClientContracts.AddAsync(clientContract);
-    //     await context.SaveChangesAsync();
-    //
-    //     return Ok();
-    // }
+    [HttpGet("{id:int}")]
+    public async Task<IActionResult> GetContracts(int id)
+    {
+
+        var contract = await context.Contracts
+            .Include(c => c.Client)
+            .Include(c => c.Software)
+            .Include(c => c.SoftwareVersion)
+            .FirstOrDefaultAsync(c => c.Id == id);
+
+        if (contract == null)
+        {
+            return NotFound();
+        }
+        
+        var contractDto = new ContractDto(
+            contract.DateFrom,
+            contract.DateTo,
+            contract.Price,
+            contract.UpdatesTo,
+            contract.Client.FirstName,
+            contract.Client.LastName,
+            contract.Client.Name,
+            contract.Software.Name,
+            contract.SoftwareVersion.VersionNumber);
+        
+        return Ok(contractDto);
+    }
+    
+    
+    [HttpPost]
+    public async Task<IActionResult> CreateContract([FromBody] CreateContractDto contractDto)
+    {
+        
+        var contract = new Contract(
+            contractDto.DateFrom,
+            contractDto.DateTo,
+            Contract.ContractStatus.AwaitingPayment,
+            await service.CalculatePrice(contractDto),
+            contractDto.UpdatesTo,
+            contractDto.ClientId,
+            contractDto.SoftwareId,
+            contractDto.SoftwareVersionId
+        );
+    
+        await context.Contracts.AddAsync(contract);
+        await context.SaveChangesAsync();
+    
+        return Ok();
+    }
 }
