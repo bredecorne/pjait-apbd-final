@@ -38,17 +38,15 @@ builder.Services.AddAuthentication(options =>
         OnAuthenticationFailed = context =>
         {
             if (context.Exception.GetType() == typeof(SecurityTokenExpiredException))
-            {
                 context.Response.Headers.Add("Token-expired", "true");
-            }
             return Task.CompletedTask;
         }
     };
-}).AddJwtBearer("IgnoreTokenExpirationScheme",opt =>
+}).AddJwtBearer("IgnoreTokenExpirationScheme", opt =>
 {
     opt.TokenValidationParameters = new TokenValidationParameters
     {
-        ValidateIssuer = true,   //by who
+        ValidateIssuer = true, //by who
         ValidateAudience = true, //for whom
         ValidateLifetime = false,
         ClockSkew = TimeSpan.FromMinutes(2),

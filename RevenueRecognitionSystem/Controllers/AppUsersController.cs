@@ -107,7 +107,7 @@ public class AppUsersController(IConfiguration configuration, RrsDbContext conte
             refreshToken = user.RefreshToken
         });
     }
-    
+
     [Authorize(Roles = "Admin")]
     [HttpDelete]
     public async Task<IActionResult> DeleteAppUser(int id)

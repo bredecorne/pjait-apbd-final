@@ -7,21 +7,14 @@ using RevenueRecognitionSystem.Models;
 
 namespace RevenueRecognitionSystem.Services;
 
-public class PaymentsService : IPaymentsService
+public class PaymentsService(RrsDbContext context) : IPaymentsService
 {
-    private readonly RrsDbContext _context;
-
-    public PaymentsService(RrsDbContext context)
-    {
-        _context = context;
-    }
-
     public async Task<decimal?> CalculateRemainingToPay(int contractId)
     {
-        var contract = await _context.Contracts.FindAsync(contractId);
+        var contract = await context.Contracts.FindAsync(contractId);
         if (contract == null) return null;
 
-        var payments = await _context.ContractPayments
+        var payments = await context.ContractPayments
             .Where(p => p.ContractId == contractId)
             .ToListAsync();
 
@@ -34,10 +27,10 @@ public class PaymentsService : IPaymentsService
     public async Task<(bool Success, IActionResult Response, ContractPayment Payment)> AddPayment(
         CreateContractPaymentDto paymentDto)
     {
-        var contract = await _context.Contracts.FindAsync(paymentDto.ContractId);
+        var contract = await context.Contracts.FindAsync(paymentDto.ContractId);
         if (contract == null) return (false, new NotFoundResult(), null);
 
-        var client = await _context.Clients.FindAsync(paymentDto.ClientId);
+        var client = await context.Clients.FindAsync(paymentDto.ClientId);
         if (client == null) return (false, new NotFoundResult(), null);
 
         var remaining = await CalculateRemainingToPay(paymentDto.ContractId);
@@ -50,8 +43,8 @@ public class PaymentsService : IPaymentsService
             paymentDto.Date
         );
 
-        _context.ContractPayments.Add(payment);
-        await _context.SaveChangesAsync();
+        context.ContractPayments.Add(payment);
+        await context.SaveChangesAsync();
 
         if (remaining - paymentDto.Value == 0) await UpdateContractStatus(paymentDto.ContractId);
 
@@ -60,7 +53,7 @@ public class PaymentsService : IPaymentsService
 
     public async Task<decimal> CalculateIncomeRecognized()
     {
-        var contracts = await _context.Contracts
+        var contracts = await context.Contracts
             .Where(c => c.Status == Contract.ContractStatus.Active || c.Status == Contract.ContractStatus.Inactive)
             .ToListAsync();
 
@@ -71,7 +64,7 @@ public class PaymentsService : IPaymentsService
 
     public async Task<decimal?> CalculateIncomeRecognized(int softwareId)
     {
-        var contracts = await _context.Contracts
+        var contracts = await context.Contracts
             .Where(c => c.SoftwareId == softwareId)
             .Where(c => c.Status == Contract.ContractStatus.Active || c.Status == Contract.ContractStatus.Inactive)
             .ToListAsync();
@@ -118,7 +111,7 @@ public class PaymentsService : IPaymentsService
 
     public async Task<decimal> CalculateExpectedIncome()
     {
-        var contracts = await _context.Contracts
+        var contracts = await context.Contracts
             .ToListAsync();
 
         var incomeExpected = contracts.Sum(c => c.Price);
@@ -128,11 +121,11 @@ public class PaymentsService : IPaymentsService
 
     private async Task UpdateContractStatus(int contractId)
     {
-        var contract = await _context.Contracts.FindAsync(contractId);
+        var contract = await context.Contracts.FindAsync(contractId);
         if (contract == null) throw new ArgumentException();
 
         contract.Status = Contract.ContractStatus.Active;
-        await _context.SaveChangesAsync();
+        await context.SaveChangesAsync();
     }
 
     private class ExchangeRateResponse
