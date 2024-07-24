@@ -1,4 +1,4 @@
-# PJAIT APBD Final Project
+# PJAIT Database Applications Final Project
 
 ## Overview
 This repository contains the final project for the Database Applications course (APBD) at the Polish-Japanese Academy of Information Technology (PJAIT). The project showcases the application of various database management and programming techniques covered in the course.
